@@ -56,3 +56,87 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+
+
+// import { useEffect, useState } from "react";
+// import { Search } from "lucide-react";
+
+// const HomePage = () => {
+//   const [stocks, setStocks] = useState([]);
+//   const [searchTerm, setSearchTerm] = useState("");
+
+//   useEffect(() => {
+//     fetch("/stock_data.json")
+//       .then((res) => res.json())
+//       .then((data) => setStocks(data.slice(0, 100))); // Limit for speed
+//   }, []);
+
+//   const filteredStocks = stocks.filter((stock) =>
+//     Object.values(stock).some((val) =>
+//       val.toString().toLowerCase().includes(searchTerm.toLowerCase())
+//     )
+//   );
+
+//   return (
+//     <div className="p-6 max-w-7xl mx-auto">
+//       <h1 className="text-3xl font-bold mb-6 text-center text-blue-700 drop-shadow">
+//         📈 Stock Market Table Viewer
+//       </h1>
+
+//       <div className="bg-white rounded-xl shadow-md overflow-hidden border">
+//         {/* Search bar */}
+//         <div className="p-4 border-b">
+//           <div className="relative">
+//             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+//             <input
+//               type="search"
+//               placeholder="Search records..."
+//               className="w-full pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+//               value={searchTerm}
+//               onChange={(e) => setSearchTerm(e.target.value)}
+//             />
+//           </div>
+//         </div>
+
+//         {/* Table */}
+//         <div className="overflow-x-auto">
+//           <table className="min-w-full text-sm text-left">
+//             <caption className="caption-top px-4 py-2 text-gray-500">
+//               Trading record data – {filteredStocks.length} records found
+//             </caption>
+//             <thead className="bg-gray-100 text-gray-700 uppercase text-xs border-b">
+//               <tr>
+//                 <th className="p-4">Date</th>
+//                 <th className="p-4">Trade Code</th>
+//                 <th className="p-4">Open</th>
+//                 <th className="p-4">High</th>
+//                 <th className="p-4">Low</th>
+//                 <th className="p-4">Close</th>
+//                 <th className="p-4">Volume</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {filteredStocks.map((item, i) => (
+//                 <tr
+//                   key={i}
+//                   className="border-t hover:bg-blue-50 transition duration-150"
+//                 >
+//                   <td className="p-4">{item.date}</td>
+//                   <td className="p-4">{item.trade_code}</td>
+//                   <td className="p-4">{item.open}</td>
+//                   <td className="p-4">{item.high}</td>
+//                   <td className="p-4">{item.low}</td>
+//                   <td className="p-4">{item.close}</td>
+//                   <td className="p-4">{item.volume}</td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default HomePage;
