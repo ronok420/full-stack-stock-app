@@ -1,11 +1,17 @@
 import { useState, useMemo } from "react";
+import { FixedSizeList as List } from "react-window";
 import StockRow from "./StockRow";
 import Pagination from "./Pagination";
+import LoadingSpinner from "./LoadingSpinner";
+
+const ROW_HEIGHT = 60; // Height of each row in pixels
 
 export default function StockTable({ stocks, onUpdate }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isPageChanging, setIsPageChanging] = useState(false);
 
   // Filter stocks by search term
   const filteredStocks = useMemo(() => {
@@ -27,24 +33,55 @@ export default function StockTable({ stocks, onUpdate }) {
 
   // Reset to first page if search or itemsPerPage changes
   const handleSearchChange = (e) => {
+    setIsSearching(true);
     setSearchTerm(e.target.value);
     setCurrentPage(1);
+    // Simulate a small delay for better UX
+    setTimeout(() => setIsSearching(false), 300);
   };
+
   const handleItemsPerPageChange = (n) => {
+    setIsPageChanging(true);
     setItemsPerPage(n);
     setCurrentPage(1);
+    // Simulate a small delay for better UX
+    setTimeout(() => setIsPageChanging(false), 300);
+  };
+
+  const handlePageChange = (page) => {
+    setIsPageChanging(true);
+    setCurrentPage(page);
+    // Simulate a small delay for better UX
+    setTimeout(() => setIsPageChanging(false), 300);
+  };
+
+  // Row renderer for virtualized list
+  const Row = ({ index, style }) => {
+    const stock = paginatedStocks[index];
+    return (
+      <div style={style}>
+        <StockRow stock={stock} onUpdate={onUpdate} />
+      </div>
+    );
   };
 
   return (
     <div className="space-y-4">
-      {/* Search bar */}
-      <input
-        type="text"
-        placeholder="🔍 Search..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-        className="w-full border-2 border-blue-200 rounded-xl px-4 py-2 text-sm shadow-md focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gradient-to-r from-white to-blue-50 mb-2"
-      />
+      {/* Search bar with loading state */}
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="🔍 Search..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="w-full border-2 border-blue-200 rounded-xl px-4 py-2 text-sm shadow-md focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gradient-to-r from-white to-blue-50 mb-2"
+        />
+        {isSearching && (
+          <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
+      </div>
 
       {/* Table */}
       <div className="overflow-x-auto bg-white shadow-2xl rounded-2xl border border-blue-100">
@@ -65,13 +102,35 @@ export default function StockTable({ stocks, onUpdate }) {
             {paginatedStocks.length === 0 ? (
               <tr>
                 <td colSpan={8} className="text-center py-8 text-gray-400 text-lg font-semibold">
-                  No stocks found.
+                  {isSearching ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                      <span>Searching...</span>
+                    </div>
+                  ) : (
+                    "No stocks found."
+                  )}
                 </td>
               </tr>
             ) : (
-              paginatedStocks.map((stock) => (
-                <StockRow key={stock.id} stock={stock} onUpdate={onUpdate} />
-              ))
+              <tr>
+                <td colSpan={8} className="p-0">
+                  {isPageChanging ? (
+                    <div className="flex items-center justify-center h-[300px]">
+                      <LoadingSpinner message="Loading page..." />
+                    </div>
+                  ) : (
+                    <List
+                      height={Math.min(paginatedStocks.length * ROW_HEIGHT, 600)}
+                      itemCount={paginatedStocks.length}
+                      itemSize={ROW_HEIGHT}
+                      width="100%"
+                    >
+                      {Row}
+                    </List>
+                  )}
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -81,9 +140,10 @@ export default function StockTable({ stocks, onUpdate }) {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
         itemsPerPage={itemsPerPage}
         onItemsPerPageChange={handleItemsPerPageChange}
+        isLoading={isPageChanging}
       />
     </div>
   );
