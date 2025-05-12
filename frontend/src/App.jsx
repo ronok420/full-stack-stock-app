@@ -18,7 +18,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/table" element={<DataTablePage />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            {/* <Route path="/settings" element={<SettingsPage />} /> */}
           </Routes>
         </Suspense>
       </DashboardLayout>
