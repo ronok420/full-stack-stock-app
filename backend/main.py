@@ -35,9 +35,12 @@ def get_db():
         db.close()
 
 # ROUTES
+# @app.get("/stocks", response_model=list[schemas.StockOut])
+# def read_stocks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+#     return crud.get_stocks(db, skip=skip, limit=limit)
 @app.get("/stocks", response_model=list[schemas.StockOut])
-def read_stocks(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_stocks(db, skip=skip, limit=limit)
+def read_stocks(db: Session = Depends(get_db)):
+    return crud.get_stocks(db)  # Removed skip and limit parameters to get all stocks
 
 @app.get("/stocks/{stock_id}", response_model=schemas.StockOut)
 def read_stock(stock_id: int, db: Session = Depends(get_db)):

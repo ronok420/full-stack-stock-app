@@ -4,8 +4,11 @@ import models, schemas
 
 
 # Read all stocks
-def get_stocks(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Stock).offset(skip).limit(limit).all()
+def get_stocks(db: Session, skip: int = 0, limit: int = None):
+    query = db.query(models.Stock).offset(skip)
+    if limit is not None:
+        query = query.limit(limit)
+    return query.all()
 
 # Read one stock by ID
 def get_stock(db: Session, stock_id: int):
