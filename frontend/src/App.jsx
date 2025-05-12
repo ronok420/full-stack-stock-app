@@ -7,7 +7,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 const HomePage = lazy(() => import("./pages/HomePage"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 const DataTablePage = lazy(() => import("./pages/DataTablePage"));
-const SettingsPage = lazy(() => import("./pages/SettingsPage"));
+
 
 function App() {
   return (
@@ -17,8 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/table" element={<DataTablePage />} />
-            {/* <Route path="/settings" element={<SettingsPage />} /> */}
+            <Route path="/table" element={<DataTablePage />} />           
           </Routes>
         </Suspense>
       </DashboardLayout>

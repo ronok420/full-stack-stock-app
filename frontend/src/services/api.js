@@ -1,4 +1,5 @@
-const BASE_URL = "http://127.0.0.1:8000"; // Replace with your deployed URL if needed
+// const BASE_URL = "http://127.0.0.1:8000"; 
+const BASE_URL = "https://full-stack-bog-app-backend.onrender.com"; // Replace with deployed URL 
 
 //  Get all stocks
 export async function getStocks() {
