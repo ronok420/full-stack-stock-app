@@ -21,19 +21,21 @@ A full-stack stock management and analytics platform featuring real-time data ed
 
 ```
 stock-analytics-app/
-├── backend/                 # FastAPI Backend
-│   ├── main.py
-│   ├── models.py
-│   ├── database.py
-│   ├── schemas.py
-│   ├── crud.py
-│   ├── seed_data.py
-├── frontend/                # React Frontend (Vite + Tailwind)
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── App.jsx
+├── backend/ # FastAPI Backend
+│ ├── main.py
+│ ├── models.py
+│ ├── database.py
+│ ├── schemas.py
+│ ├── crud.py
+│ └── seed_data.py
+├── frontend/ # React Frontend (Vite + Tailwind)
+│ ├── src/
+│ │ ├── components/ # Reusable UI components
+│ │ ├── context/ # React Context for global state (StocksContext)
+│ │ ├── pages/ # Route-based page components
+│ │ ├── services/ # API calls (api.js)
+│ │ └── App.jsx # Main app & routing setup
+└── README.md # Project overview and setup instructions
 ```
 
 ---
