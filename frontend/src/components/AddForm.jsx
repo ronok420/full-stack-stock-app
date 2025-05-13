@@ -1,5 +1,5 @@
+
 import { useState } from "react";
-import { createStock } from "../services/api";
 import Input from "./Input";
 import Button from "./Button";
 
@@ -13,26 +13,23 @@ export default function AddForm({ onAdd }) {
     close: "",
     volume: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) =>
+    setFormData((f) => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      // Convert numeric fields to numbers
-      const processedData = {
+      const payload = {
         ...formData,
         open: parseFloat(formData.open) || 0,
         high: parseFloat(formData.high) || 0,
         low: parseFloat(formData.low) || 0,
         close: parseFloat(formData.close) || 0,
       };
-      
-      const response = await createStock(processedData);
-      console.log('Stock created:', response);
-      
+      await onAdd(payload);        // ONLY call addStock from context
       setFormData({
         date: "",
         trade_code: "",
@@ -42,10 +39,11 @@ export default function AddForm({ onAdd }) {
         close: "",
         volume: "",
       });
-      onAdd(); // trigger data reload
-    } catch (error) {
-      console.error('Error creating stock:', error);
-      alert('Failed to create stock. Please check the console for details.');
+    } catch (err) {
+      console.error("Add failed:", err);
+      alert("Failed to add—check console.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,14 +61,11 @@ export default function AddForm({ onAdd }) {
           value={formData[field]}
           onChange={handleChange}
           required
+          disabled={loading}
         />
       ))}
-      <Button
-        type="submit"
-        className="col-span-2 sm:col-span-1"
-        variant="primary"
-      >
-        ➕ Add
+      <Button type="submit" variant="primary" className="col-span-2 sm:col-span-1" disabled={loading}>
+        {loading ? "⏳ Adding…" : "➕ Add"}
       </Button>
     </form>
   );

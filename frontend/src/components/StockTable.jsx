@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { FixedSizeList as List } from "react-window";
 import StockRow from "./StockRow";
 import Pagination from "./Pagination";
@@ -6,12 +6,18 @@ import LoadingSpinner from "./LoadingSpinner";
 
 const ROW_HEIGHT = 60; // Height of each row in pixels
 
-export default function StockTable({ stocks, onUpdate }) {
+export default function StockTable({ stocks: initialStocks, onUpdate }) {
+  const [stocks, setStocks] = useState(initialStocks);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [isSearching, setIsSearching] = useState(false);
   const [isPageChanging, setIsPageChanging] = useState(false);
+
+  // Update local state when initialStocks changes
+  useEffect(() => {
+    setStocks(initialStocks);
+  }, [initialStocks]);
 
   // Filter stocks by search term
   const filteredStocks = useMemo(() => {
@@ -30,6 +36,25 @@ export default function StockTable({ stocks, onUpdate }) {
   }, [filteredStocks, currentPage, itemsPerPage]);
 
   const totalPages = Math.max(1, Math.ceil(filteredStocks.length / itemsPerPage));
+
+  // Handle local state updates
+  const handleStockUpdate = (updatedStock) => {
+    setStocks(prevStocks => 
+      prevStocks.map(stock => 
+        stock.id === updatedStock.id ? updatedStock : stock
+      )
+    );
+  };
+
+  const handleStockDelete = (deletedId) => {
+    setStocks(prevStocks => 
+      prevStocks.filter(stock => stock.id !== deletedId)
+    );
+  };
+
+  const handleStockAdd = (newStock) => {
+    setStocks(prevStocks => [...prevStocks, newStock]);
+  };
 
   // Reset to first page if search or itemsPerPage changes
   const handleSearchChange = (e) => {
@@ -60,7 +85,11 @@ export default function StockTable({ stocks, onUpdate }) {
     const stock = paginatedStocks[index];
     return (
       <div style={style}>
-        <StockRow stock={stock} onUpdate={onUpdate} />
+        <StockRow 
+          stock={stock} 
+          onUpdate={handleStockUpdate}
+          onDelete={handleStockDelete}
+        />
       </div>
     );
   };

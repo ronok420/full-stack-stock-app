@@ -1,23 +1,13 @@
-import { useEffect, useState } from "react";
-import { getStocks } from "../services/api";
+
+import { useEffect } from "react";
 import StockAnalytics from "../components/StockAnalytics";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { useStocks } from "../context/StocksContext";
 
 export default function AnalyticsPage() {
-  const [stocks, setStocks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { stocks, loading } = useStocks();
 
-  // Fetch data from backend
-  const fetchData = async () => {
-    setLoading(true);
-    const data = await getStocks();
-    setStocks(data);
-    setLoading(false);
-  };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 rounded-3xl shadow-2xl bg-white/80 border border-blue-100 backdrop-blur-md">
@@ -41,5 +31,5 @@ export default function AnalyticsPage() {
         <StockAnalytics stocks={stocks} />
       )}
     </div>
-  );
+);
 }
